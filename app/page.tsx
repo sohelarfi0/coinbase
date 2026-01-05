@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import DataTable from '@/components/DataTable';
 import { headers } from 'next/headers';
 import { Link, TrendingDown, TrendingUp } from 'lucide-react';
@@ -50,23 +50,29 @@ const  columns:DataTableColumn<TrendingCoin>[]=[{
 
 ]
 const page = async() => {
-  const coin=await fetcher<CoinDetailsData>('/coins/bitcoin',{
-     dex-pair-format:'symbol'
+  const coin=await fetcher<CoinDetailsData>
+  ('/coins/bitcoin',{
+     dex_pair_format:'symbol'
   });
+
   return (
     <main className='main-container'>
       <section className='home-grid'>
         <div id="coin-overview">
           <div className='header pt-2'>
-            <Image src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" alt="Bitcoin" width={56} height={56}/>
+            <Image src={coin.image.large} alt={coin.name}
+             width={56} height={56}/>
           <div className='info'>
-            <p>Bitcoin /BTC</p>
-            <h1>$89,113.00</h1>
+            <p>{coin.name}/{coin.symbol.toUpperCase()}</p>
+            <h1>{formatCurrency(coin.market_data.current_price.usd)
+              }</h1>
           </div>
           </div>
         </div>
         <p>Trending Coins</p>
-        <DataTable columns={[{header:'Title'},{header:'Price'}]} />
+        <div id='trending-coins'>
+        
+        </div>
       </section>
     </main>
   )
