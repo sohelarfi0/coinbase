@@ -3,7 +3,7 @@ import { fetcher } from '@/lib/coingecko.actions';
 import Image from 'next/image';
 import { formatCurrency } from '@/lib/utils';
 import { CoinOverviewFallback } from './fallback';
-import CandlestickChart from '@components/CandlestickChart';
+import CandlestickChart from '@/components/CandleStickChart';
 
 const CoinOverview = async () => {
   try {
@@ -11,7 +11,7 @@ const CoinOverview = async () => {
       fetcher<CoinDetailsData>('/coins/bitcoin', {
         dex_pair_format: 'symbol',
       }),
-      fetcher<OHLCData[]>('/coins/bitcoin/ohlc', {
+      fetcher<OHLCData[]>('/coins/coins/ohlc', {
         vs_currency: 'usd',
         days: 1,
         interval: 'hourly',
@@ -34,7 +34,7 @@ const CoinOverview = async () => {
         </CandlestickChart>
       </div>
     );
-  } catch (error) {
+  }catch (error) {
     console.error('Error fetching coin overview:', error);
     return <CoinOverviewFallback />;
   }
