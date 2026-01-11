@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260" role="img" aria-label="Coinbase logo recreated from image" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#3fb0ff"/>
+      <stop offset="40%" stop-color="#1ea2ff"/>
+      <stop offset="100%" stop-color="#0877e3"/>
+    </linearGradient>
+    <radialGradient id="plateLight" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#9fe1ff" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#2fb1ff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0077d9" stop-opacity="0.95"/>
+    </radialGradient>
+    <filter id="softDrop" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    <filter id="innerGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Left circular emblem -->
+  <g transform="translate(40,20)" filter="url(#softDrop)">
+    <!-- outer ring -->
+    <circle cx="120" cy="120" r="88" fill="url(#blueGrad)"/>
+    <!-- inner ring to create bevel -->
+    <circle cx="120" cy="120" r="64" fill="url(#plateLight)"/>
+    <circle cx="120" cy="120" r="44" fill="#0ea2ff"/>
+
+    <!-- subtle rim highlight -->
+    <path d="M32 120 a88 88 0 0 0 176 0" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="6"/>
+
+    <!-- CB monogram (white) -->
+    <g transform="translate(0,0)">
+      <!-- C: left half-circle with gap -->
+      <path d="M96 120
+               C96 96 108 80 128 80"
+            fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M96 120
+               C96 144 108 160 128 160"
+            fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+
+      <!-- B: vertical stem and two bowls -->
+      <path d="M152 80 L152 160" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M152 96 C170 96 170 110 152 114" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M152 122 C174 122 174 140 152 144" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <!-- small center cut for depth -->
+    <circle cx="120" cy="120" r="8" fill="#0a83d9" opacity="0.6"/>
+  </g>
+
+  <!-- Wordmark to the right: lowercase italic, blue fill with subtle stroke -->
+  <g transform="translate(260,140)" font-family="Inter, Arial, Helvetica, sans-serif" text-anchor="start">
+    <text x="0" y="0" font-size="84" font-weight="700" font-style="italic" fill="#2aa6ff" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1">coin<tspan dx="18">base</tspan></text>
+  </g>
+
+</svg>
