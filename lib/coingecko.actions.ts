@@ -38,6 +38,9 @@ export async function fetcher<T>(
   return response.json();
 }
 
+
+
+
 export async function getPools(
   id: string,
   network?: string | null,
@@ -71,3 +74,9 @@ export async function getPools(
     return fallback;
   }
 }
+
+  
+
+
+
+
