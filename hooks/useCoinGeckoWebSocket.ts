@@ -1,4 +1,4 @@
-import { Command } from "lucide-react";
+// import { Command } from "lucide-react";
 import { useEffect, useState,useRef } from "react";
 
 const WS_BASE=`${process.env
@@ -11,7 +11,7 @@ const WS_BASE=`${process.env
         liveInterval,
     }:UseCoinGeckoWebSocketProps):UseCoinGeckoWebSocketReturn => {
         const wsRef=useRef<WebSocket |null>(null);
-        const subscribed =useRef(Set<string>new Set());
+        const subscribed =useRef(<Set<string>>new Set());
 
         const [price,SetPrice]=useState<ExtendedPriceData |null>(null);
         const[trades,setTrades]=useState<Trade[]>([]);
@@ -54,7 +54,7 @@ const WS_BASE=`${process.env
                         const newTrade: Trade={
                             price:msg.pu,
                             value:msg.vo,
-                            timeStamp:msg.t ??0,
+                            timestamp:msg.t ??0,
                             type:msg.ty,
                             amount:msg.to,
                         };
@@ -80,6 +80,11 @@ const WS_BASE=`${process.env
                 ws.onopen=()=>setIsWsReady(true);
                 ws.onmessage=handleMessage;
                 ws.onclose=()=>setIsWsReady(false);
+
+                ws.onerror=(error)=>{
+                    // console.error('WebSocket error:',error);
+                    setIsWsReady(false);
+                };
 
                 return()=>ws.close();
 
@@ -122,7 +127,41 @@ const WS_BASE=`${process.env
                         });
                     }
                 };
+
+                queueMicrotask(()=>{
+                    SetPrice(null);
+                    setTrades([]);
+                    setOhlcv(null);
+
+                    unsubscribeAll();
+
+                    subscribe('CGSimplePrice',{coin_id:[coinId],action:'set_tokens'});
+
+                });
+
+                const poolAddress=poolId.replace('_',':') ?? '';
+
+                if(poolAddress){
+                    subscribe('OnchainTrade',{
+                        'network_id:pool_address':[poolAddress],
+                        action:'set_pools',
+                    });
+                    subscribe('OnchainOHLCV',{
+                        'network_id:pool_address':[poolAddress],
+                        interval:liveInterval,
+                        action:'set_pools',
+                    });
+
+
+                }
             
         },[coinId,poolId,isWsReady,liveInterval]);
     
+
+        return{
+            price,
+            trades,
+            ohlcv,
+            isConnected:isWsReady,
+        };
     };

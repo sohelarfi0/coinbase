@@ -2,11 +2,12 @@
 'use client';
 
 
-import { getCandlestickConfig, getChartConfig, PERIOD_BUTTONS, PERIOD_CONFIG } from "@/constants";
+import { getCandlestickConfig, getChartConfig, LIVE_INTERVAL_BUTTONS, PERIOD_BUTTONS, PERIOD_CONFIG } from "@/constants";
 import { CandlestickSeries, createChart, IChartApi,ISeriesApi } from "lightweight-charts";
 import { useEffect, useRef,useState, useTransition } from "react";
 import { fetcher } from "@/lib/coingecko.actions";
 import { convertOHLCData } from "@/lib/utils";
+import {  } from "lucide-react";
 // import { PERIOD_CONFIG } from "@/constants";
 
 const CandlestickChart = ({
@@ -15,12 +16,20 @@ const CandlestickChart = ({
   coinId,
   height=360,
   initialPeriod='daily',
+  liveOhlcv=null,
+  mode='historical',
+  liveInterval,
+  setLiveInterval
+
 }: CandlestickChartProps) => {
   const [period,setPeriod]=useState(initialPeriod);
   // const [loading,setLoading]=useState(false);
   const chartContainerRef=useRef<HTMLDivElement|null>(null);
   const chartRef=useRef<IChartApi |null>(null);
   const candelSeriesRef=useRef<ISeriesApi<"Candlestick">|null>(null);
+
+  const preOhlcDataLength=useRef<number>(data?.length ||0);
+  
   const [ohlcData,setOhlcData]=useState<OHLCData[]>(data ?? []);
   const [isPending,startTransition]=useTransition();
   const fetchOHLCData=async(selectedPeriod:Period)=>{
@@ -33,8 +42,11 @@ const CandlestickChart = ({
         interval,
         precision:'full',
       });
+      startTransition(()=>{
+        setOhlcData(newData ?? []);
+
+      });
       
-      setOhlcData(newData ?? []);
     }
       
       catch(e){
@@ -49,10 +61,10 @@ const CandlestickChart = ({
   const handlePeriodChange=(newPeriod:Period)=>{
     if(newPeriod===period) return;
 
-    startTransition(async()=>{
+    
       setPeriod(newPeriod);
-      await fetchOHLCData(newPeriod);
-    });
+      fetchOHLCData(newPeriod);
+   
 
   };
 
@@ -72,6 +84,7 @@ const CandlestickChart = ({
     item[4]] as OHLCData,
 
     );
+
    
     series.setData(convertOHLCData(convertedSeconds));
     chart.timeScale().fitContent();
@@ -95,7 +108,7 @@ const CandlestickChart = ({
     };
 
 
-  },[height,period]);
+  },[height, ohlcData, period]);
 
   useEffect(()=>{
     if(!candelSeriesRef.current) return ;
@@ -104,13 +117,44 @@ const CandlestickChart = ({
     item[4]] as OHLCData,
 
     );
-     const converted=convertOHLCData(convertedSeconds);
+
+
+    let merged:OHLCData[];
+
+    if(liveOhlcv){
+      const liveTimestamp=liveOhlcv[0];
+
+      const lastHistoricalCandle=convertedSeconds[convertedSeconds.length-1];
+
+      if(lastHistoricalCandle && lastHistoricalCandle[0]===liveTimestamp){
+        merged=[...convertedSeconds.slice(0,-1),liveOhlcv];
+
+      }
+      else{
+        merged=[...convertedSeconds,liveOhlcv];
+      }
+
+    }else{
+      merged=convertedSeconds;
+    }
+    merged.sort((a,b)=>a[0]-b[0]);
+
+
+
+
+     const converted=convertOHLCData(merged);
      candelSeriesRef.current.setData(converted);
-     chartRef.current?.timeScale().fitContent();
+     const dataChanged=preOhlcDataLength.current!==ohlcData.length;
+     if(dataChanged||mode==='historical'){
+      chartRef.current?.timeScale().fitContent();
+      preOhlcDataLength.current=ohlcData.length;
+     }
 
-  },[ohlcData,period]);
+  },[ohlcData,period,liveOhlcv,mode]);
 
 
+
+  
   return (
     <div id='candlestick-chart'>
       <div className='chart-header'>
@@ -127,6 +171,18 @@ const CandlestickChart = ({
             </button>
           ))}
         </div>
+        {liveInterval &&  <div className="button-group">
+          <span className="text-sm mx-2 font-medium text-purple-100/50">
+          Update Frequency
+            </span>
+            {LIVE_INTERVAL_BUTTONS.map(({value,label})=>(
+              <button key={value} 
+            className={liveInterval===value?'config-button-active':'config-button'}
+             onClick={()=>setLiveInterval && setLiveInterval(value)}
+             disabled={isPending}>
+              {label}
+            </button>
+            ))}</div>}
 
       </div>
 
@@ -135,3 +191,11 @@ const CandlestickChart = ({
 };
 
 export  default CandlestickChart
+
+
+
+
+
+
+
+
