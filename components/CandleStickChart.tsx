@@ -7,7 +7,7 @@ import { CandlestickSeries, createChart, IChartApi,ISeriesApi } from "lightweigh
 import { useEffect, useRef,useState, useTransition } from "react";
 import { fetcher } from "@/lib/coingecko.actions";
 import { convertOHLCData } from "@/lib/utils";
-import { Divide } from "lucide-react";
+import {  } from "lucide-react";
 // import { PERIOD_CONFIG } from "@/constants";
 
 const CandlestickChart = ({
@@ -108,7 +108,7 @@ const CandlestickChart = ({
     };
 
 
-  },[height,period]);
+  },[height, ohlcData, period]);
 
   useEffect(()=>{
     if(!candelSeriesRef.current) return ;
@@ -191,3 +191,11 @@ const CandlestickChart = ({
 };
 
 export  default CandlestickChart
+
+
+
+
+
+
+
+

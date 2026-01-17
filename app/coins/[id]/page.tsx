@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { fetcher, getPools } from '@/lib/coingecko.actions';
 import Link from 'next/link';
@@ -66,8 +65,8 @@ const Page = async ({ params }: NextPageProps) => {
   return (
     <main id="coin-details-page">
       <section className="primary">
-
-        <LiveDataWrapper coinId={id} poolId={pool.id} coin={coinData} coinOHLCData={coinOHLCData}>
+        <LiveDataWrapper coinId={id} poolId={pool.id} coin={coinData}
+       coinOHLCData={coinOHLCData}>
           <h4>Exchange Listings</h4>
         </LiveDataWrapper>
       </section>

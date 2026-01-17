@@ -81,6 +81,11 @@ const WS_BASE=`${process.env
                 ws.onmessage=handleMessage;
                 ws.onclose=()=>setIsWsReady(false);
 
+                ws.onerror=(error)=>{
+                    // console.error('WebSocket error:',error);
+                    setIsWsReady(false);
+                };
+
                 return()=>ws.close();
 
             
@@ -134,7 +139,7 @@ const WS_BASE=`${process.env
 
                 });
 
-                const poolAddress=poolId.replace('_',':');
+                const poolAddress=poolId.replace('_',':') ?? '';
 
                 if(poolAddress){
                     subscribe('OnchainTrade',{

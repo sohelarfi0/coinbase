@@ -61,7 +61,7 @@ export async function getPools(
 
       return poolData.data?.[0] ?? fallback;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return fallback;
     }
   }
@@ -76,7 +76,3 @@ export async function getPools(
 }
 
   
-
-
-
-
